@@ -1,17 +1,19 @@
 package com.github.vinizaan.fastcalculation
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import com.github.vinizaan.fastcalculation.Extras.EXTRA_SETTINGS
 import com.github.vinizaan.fastcalculation.databinding.FragmentGameBinding
+
 
 class GameFragment : Fragment() {
     private lateinit var fragmentGameBinding: FragmentGameBinding
@@ -93,17 +95,11 @@ class GameFragment : Fragment() {
             startRoundTime = System.currentTimeMillis()
             roundDeadLineHendler.sendEmptyMessageDelayed(MSG_ROUND_DEADLINE, settings.roundInterval)
         } else {
-            with(fragmentGameBinding) {
-                roundTv.text = getString(R.string.points)
-                val points = hits * 10f / (totalGameTime / 1000L)
-                "%.1f".format(points).also {
-                    questionTv.text = it
-                }
-                alternativeOneBt.visibility = View.GONE
-                alternativeTwoBt.visibility = View.GONE
-                alternativeThreeBt.visibility = View.GONE
-
-            }
+            val points = hits * 10f / (totalGameTime / 1000L)
+            val intent = Intent(context, FinishedGameActivity::class.java)
+            intent.putExtra(Extras.EXTRA_POINTS, "%.1f".format(points))
+            intent.putExtra(EXTRA_SETTINGS, settings)
+            startActivity(intent)
         }
     }
 }
